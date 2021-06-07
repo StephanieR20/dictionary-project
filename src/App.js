@@ -9,7 +9,8 @@ function App() {
       <main>
         <Dictionary/>
       </main>
-      <footer>
+      <br/>
+      <footer className="App-footer">
          This project was coded by Stephanie Rubio
           and is <a
             href="https://github.com/StephanieR20/dictionary-project"
