@@ -4,11 +4,11 @@ import Results from "./Results";
 import "./Dictionary.css"
 
 
-export default function Dictionary(){
+export default function Dictionary(props){
 
-    let [keyWord, setKeyword] = useState("");
-
+    let [keyword, setKeyword] = useState(props.defaultKeyword);
     let [results, setResults] = useState(null);
+    let [loaded, setLoaded] = useState(false);
 
 
     function handleResponse(response){
@@ -17,24 +17,44 @@ export default function Dictionary(){
       setResults(response.data[0]);
     }
 
-  function Search(event){
-      event.preventDefault();
-    let apiUrl=`https://api.dictionaryapi.dev/api/v2/entries/en_US/${keyWord}`
-
+    function search(){
+       let apiUrl=`https://api.dictionaryapi.dev/api/v2/entries/en_US/${keyword}`
       axios.get(apiUrl).then(handleResponse);
+    }
 
+  function handleSubmit(event){
+      event.preventDefault();
+      search();
   }
 
   function handleKeywordChange(event){
       setKeyword(event.target.value);
 
   }
-    return(
+  function load(){
+    setLoaded(true);
+    search();
+  }
+
+  if (loaded){
+     return(
         <div className="Dictionary">
-          <form className="search-form" onSubmit={Search}>
-              <input type="Search" onChange={handleKeywordChange}/>
-             </form>
+           <section> 
+          <h1>What word do you want to look up?</h1>
+          <form className="search-form" onSubmit={handleSubmit}>
+              <input placeholder="Search for a word" type="Search" onChange={handleKeywordChange} defaultValue={props.defaultKeyword}/>
+             </form> 
+             <div className="hint">
+               words you have search: verb, twilight, semidarkness, npm, animation....
+             </div>
+             </section>
              <Results results={results}/>
+            
         </div>
     );
+  }else{
+    load();
+    return "Loading...";
+  }
+   
 }
